@@ -222,6 +222,14 @@ export const themes = [
     },
   },
   {
+    name: 'reed',
+    label: _('Reed'),
+    colors: {
+      light: generateLightPalette({ fg: '#241f1a', bg: '#faf7f1', primary: '#9a5b3c' }),
+      dark: generateDarkPalette({ fg: '#ece5da', bg: '#1b1815', primary: '#d29470' }),
+    },
+  },
+  {
     name: 'sunset',
     label: _('Sunset'),
     colors: {

@@ -8,6 +8,8 @@
 }
 /* The built-in Readest themes, compiled from themes.ts (see daisyui-themes.ts). */
 @plugin './daisyui-themes.ts';
+/* Reed: Apple Books-inspired skin (physical covers, editorial type). */
+@import './reed-skin.css';
 
 @custom-variant eink (html[data-eink='true'] &);
 @custom-variant not-eink (html:not([data-eink='true']) &);
