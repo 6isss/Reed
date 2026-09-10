@@ -1,0 +1,118 @@
+/*
+ * Reed skin — Apple Books-inspired presentation layer.
+ *
+ * Purely visual: it restyles the existing Readest library/reader markup and
+ * adds no components, state or logic. Everything is scoped to the "reed"
+ * theme (Settings → Theme → Reed), so every other theme renders exactly as
+ * upstream does.
+ *
+ * Font stack stays offline-safe (no webfont download), which matters for the
+ * Android build.
+ */
+
+html[data-theme^='reed-'] {
+  --reed-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
+    'Times New Roman', serif;
+  --reed-shadow: 0 1px 2px rgb(36 31 26 / 0.14), 0 10px 22px -8px rgb(36 31 26 / 0.3),
+    0 24px 48px -20px rgb(36 31 26 / 0.28);
+  --reed-ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html[data-theme='reed-dark'] {
+  --reed-shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 12px 26px -8px rgb(0 0 0 / 0.6),
+    0 26px 52px -20px rgb(0 0 0 / 0.5);
+}
+
+/* ---- Editorial headings -------------------------------------------------- */
+
+html[data-theme^='reed-'] .recent-shelf h3,
+html[data-theme^='reed-'] .group-header h2,
+html[data-theme^='reed-'] .book-item h4,
+html[data-theme^='reed-'] .bookshelf h2 {
+  font-family: var(--reed-serif);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+html[data-theme^='reed-'] .book-item h4 {
+  letter-spacing: -0.005em;
+}
+
+/* ---- Physical book covers ------------------------------------------------ */
+
+/* The cover floats off the shelf: soft ambient shadow, hairline edge and a
+   rounded outer corner, matching Apple Books' object-like treatment. */
+html[data-theme^='reed-'] .book-item .bookitem-main {
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+
+html[data-theme^='reed-'] .book-item .bookitem-main img,
+html[data-theme^='reed-'] .book-item .bookitem-main .book-cover,
+html[data-theme^='reed-'] .recent-shelf img {
+  border-radius: 2px 6px 6px 2px;
+  box-shadow: var(--reed-shadow);
+  transition:
+    transform 0.35s var(--reed-ease),
+    box-shadow 0.35s var(--reed-ease);
+}
+
+/* Spine shading + page block on the fore edge, drawn over the artwork. */
+html[data-theme^='reed-'] .book-item .bookitem-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 2px 6px 6px 2px;
+  background:
+    linear-gradient(
+      to right,
+      rgb(0 0 0 / 0.34) 0,
+      rgb(0 0 0 / 0.1) 3px,
+      rgb(255 255 255 / 0.16) 6px,
+      rgb(255 255 255 / 0) 12px
+    ),
+    linear-gradient(to left, rgb(0 0 0 / 0.14) 0, rgb(0 0 0 / 0) 8px);
+  mix-blend-mode: multiply;
+}
+
+/* Gentle lift on pointer devices only, so touch scrolling stays crisp. */
+@media (hover: hover) {
+  html[data-theme^='reed-'] .book-item:hover .bookitem-main img {
+    transform: translateY(-3px) scale(1.012);
+  }
+}
+
+/* ---- Calmer surfaces ----------------------------------------------------- */
+
+html[data-theme^='reed-'] .library-grid-item,
+html[data-theme^='reed-'] .library-list-item {
+  background: transparent;
+}
+
+html[data-theme^='reed-'] .footer-bar {
+  backdrop-filter: saturate(1.1) blur(18px);
+}
+
+/* E-ink cannot render shadows or blends; fall back to a plain bordered cover. */
+html[data-eink='true'][data-theme^='reed-'] .book-item .bookitem-main img,
+html[data-eink='true'][data-theme^='reed-'] .recent-shelf img {
+  box-shadow: none;
+  border: 1px solid var(--color-base-content, currentColor);
+  border-radius: 0;
+}
+
+html[data-eink='true'][data-theme^='reed-'] .book-item .bookitem-main::before {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme^='reed-'] .book-item .bookitem-main img {
+    transition: none;
+  }
+  html[data-theme^='reed-'] .book-item:hover .bookitem-main img {
+    transform: none;
+  }
+}
